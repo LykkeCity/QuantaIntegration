@@ -1,7 +1,7 @@
 ﻿pragma solidity ^0.4.1;
 
 contract QNTB {
-    function transfer(address _to, uint256 _value) returns (bool success);
+    function transfer(address _to, uint64 _amount) public returns (bool);
 }
 
 contract UserContract {

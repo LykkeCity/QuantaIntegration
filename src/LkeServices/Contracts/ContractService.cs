@@ -66,11 +66,11 @@ namespace LkeServices.Contracts
             var contractList = new List<string>();
             for (var i = 0; i < count; i++)
             {
-                try 
+                try
                 {
                     // get contract transaction
                     TransactionReceipt receipt;
-                    while((receipt = await _web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHashList[i])) == null) 
+                    while ((receipt = await _web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHashList[i])) == null)
                     {
                         await Task.Delay(100);
                     }
@@ -78,17 +78,20 @@ namespace LkeServices.Contracts
                     // check if contract byte code is deployed
                     var code = await _web3.Eth.GetCode.SendRequestAsync(receipt.ContractAddress);
 
-                    if(string.IsNullOrWhiteSpace(code) || code == "0x") 
+                    if (string.IsNullOrWhiteSpace(code) || code == "0x")
                     {
                         throw new Exception("Code was not deployed correctly, verify bytecode or enough gas was to deploy the contract");
                     }
 
-                    if(await contract.GetFunction("addUser").CallAsync<bool>(receipt.ContractAddress)) 
+                    var function = contract.GetFunction("addUser");
+
+                    if (await function.CallAsync<bool>(_settings.QuantaAssetContractOwner, new HexBigInteger(Constants.GasForTransfer),
+                            new HexBigInteger(0), receipt.ContractAddress))
                     {
-                        await contract.GetFunction("addUser").SendTransactionAsync(_settings.EthereumQuantaAccount, new HexBigInteger(Constants.GasForTransfer),
+                        await function.SendTransactionAsync(_settings.QuantaAssetContractOwner, new HexBigInteger(Constants.GasForTransfer),
                             new HexBigInteger(0), receipt.ContractAddress);
-                    } 
-                    else 
+                    }
+                    else
                     {
                         throw new Exception("addUser function failed on QNTB contract");
                     }

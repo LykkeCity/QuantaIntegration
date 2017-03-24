@@ -8,6 +8,7 @@ using Nethereum.RPC.Eth.TransactionManagers;
 using Nethereum.RPC.Eth.Transactions;
 using Nethereum.Web3;
 using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Util;
 using Transaction = Nethereum.Signer.Transaction;
 
 namespace LkeServices.Signature
@@ -54,7 +55,8 @@ namespace LkeServices.Signature
 
             var tr = new Transaction(transaction.To, value, nonce, gasPrice, gasValue, transaction.Data);
             var hex = tr.GetRLPEncoded().ToHex();
-            var response = await _signatureApi.SignTransaction(new SignRequest { From = transaction.From, Transaction = hex });
+            
+            var response = await _signatureApi.SignTransaction(new SignRequest { From = new AddressUtil().ConvertToChecksumAddress(transaction.From), Transaction = hex });
 
             return await ethSendTransaction.SendRequestAsync(response.SignedTransaction.EnsureHexPrefix()).ConfigureAwait(false);
         }
