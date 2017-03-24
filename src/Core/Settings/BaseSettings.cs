@@ -10,6 +10,7 @@
         public Contract UserContract { get; set; }
 
         public string EthereumMainAccount { get; set; }
+        public string EthereumQuantaAccount { get; set; }
 
         public int MinContractPoolLength { get; set; } = 100;
         public int MaxContractPoolLength { get; set; } = 200;

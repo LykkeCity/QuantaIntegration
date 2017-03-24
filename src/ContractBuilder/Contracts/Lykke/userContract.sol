@@ -1,19 +1,7 @@
 ﻿pragma solidity ^0.4.1;
 
-contract QNTB is Owner, QNTBEvent {
-    string public name;
-    uint8 public decimals;
-    uint64 public totalSupply;
-    uint64 public totalRemainingToken;
-    mapping(address => uint64) public balanceOf;
-    enum UserStatus { NonExisted, Existed, Frozen }
-    mapping(address => UserStatus) public statusOf;
-    
-    function issue(address _user, uint64 _amount) onlyOwner public returns (bool);
-    function addUser(address _user) onlyOwner public returns (bool);
-    function transfer(address _to, uint64 _amount) public returns (bool);
-    function frozen(address _user) onlyOwner public returns (bool);
-    function unfrozen(address _user) onlyOwner public returns (bool);
+contract QNTB {
+    function transfer(address _to, uint256 _value) returns (bool success);
 }
 
 contract UserContract {

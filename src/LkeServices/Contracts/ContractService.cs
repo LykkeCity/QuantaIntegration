@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Common.Log;
+using Core;
 using Core.Contracts;
 using Core.Settings;
 using Nethereum.Hex.HexTypes;
@@ -13,11 +15,13 @@ namespace LkeServices.Contracts
     {
         private readonly Web3 _web3;
         private readonly BaseSettings _settings;
+        private readonly ILog _logger;
 
-        public ContractService(Web3 web3, BaseSettings settings)
+        public ContractService(Web3 web3, BaseSettings settings, ILog logger)
         {
             _web3 = web3;
             _settings = settings;
+            _logger = logger;
         }
 
         public async Task<string> CreateContract(string from, string abi, string bytecode, params object[] constructorParams)
@@ -56,33 +60,45 @@ namespace LkeServices.Contracts
                 transactionHashList.Add(transactionHash);
             }
 
-            var contract = _web3.Eth.GetContract(_settings.QuantaAssetProxy.Abi, _settings.QuantaAssetProxy.Address); //NEW LINE
+            var contract = _web3.Eth.GetContract(_settings.QuantaAssetProxy.Abi, _settings.QuantaAssetProxy.Address);
 
             // wait for all <count> contracts transactions
             var contractList = new List<string>();
             for (var i = 0; i < count; i++)
             {
-                // get contract transaction
-                TransactionReceipt receipt;
-                while ((receipt = await _web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHashList[i])) == null)
+                try 
                 {
-                    await Task.Delay(100);
+                    // get contract transaction
+                    TransactionReceipt receipt;
+                    while((receipt = await _web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHashList[i])) == null) 
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    // check if contract byte code is deployed
+                    var code = await _web3.Eth.GetCode.SendRequestAsync(receipt.ContractAddress);
+
+                    if(string.IsNullOrWhiteSpace(code) || code == "0x") 
+                    {
+                        throw new Exception("Code was not deployed correctly, verify bytecode or enough gas was to deploy the contract");
+                    }
+
+                    if(await contract.GetFunction("addUser").CallAsync<bool>(receipt.ContractAddress)) 
+                    {
+                        await contract.GetFunction("addUser").SendTransactionAsync(_settings.EthereumQuantaAccount, new HexBigInteger(Constants.GasForTransfer),
+                            new HexBigInteger(0), receipt.ContractAddress);
+                    } 
+                    else 
+                    {
+                        throw new Exception("addUser function failed on QNTB contract");
+                    }
+
+                    contractList.Add(receipt.ContractAddress);
                 }
-
-                // check if contract byte code is deployed
-                var code = await _web3.Eth.GetCode.SendRequestAsync(receipt.ContractAddress);
-
-                if (string.IsNullOrWhiteSpace(code) || code == "0x")
+                catch (Exception exc)
                 {
-                    throw new Exception("Code was not deployed correctly, verify bytecode or enough gas was to deploy the contract");
+                    await _logger.WriteWarningAsync("GenerateUserContracts", "GenerateUserContractPoolFunction", exc.Message, "Transaction is failed");
                 }
-
-                if(!await contract.GetFunction("addUser").CallAsync<bool>(receipt.ContractAddress)) //NEW CODE
-                {
-                    throw new Exception("addUser function failed on QNTB contract");
-                }
-
-                contractList.Add(receipt.ContractAddress);
             }
 
             return contractList.ToArray();
