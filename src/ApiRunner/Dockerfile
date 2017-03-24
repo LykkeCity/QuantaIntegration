@@ -4,6 +4,6 @@ ARG source=.
 WORKDIR /app
 COPY $source .
 
-EXPOSE 6000/tcp
+EXPOSE 5000/tcp
 
-ENV ASPNETCORE_URLS http://*:6000
+ENV ASPNETCORE_URLS http://*:5000

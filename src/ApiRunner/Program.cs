@@ -23,8 +23,6 @@ namespace ApiRunner
 
             if (arguments.ContainsKey("port"))
                 builder.UseUrls($"http://*:{arguments["port"]}");
-            else
-                builder.UseUrls($"http://*:6111");
 
             Console.WriteLine($"Web Server is running");
             Console.WriteLine("Utc time: " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
