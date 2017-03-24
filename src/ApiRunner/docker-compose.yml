@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  apirunner:
+    image: lykkex/quantaapi
+    ports:
+     - "6566:6000"
+    environment:
+     - ConnectionStrings__Azure=UseDevelopmentStorage=true

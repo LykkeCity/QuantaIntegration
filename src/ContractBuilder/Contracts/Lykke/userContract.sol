@@ -1,0 +1,27 @@
+﻿pragma solidity ^0.4.1;
+
+contract ERC20 {
+    function transfer(address _to, uint256 _value) returns (bool success);
+}
+
+contract UserContract {
+    address _owner;
+    address _asset;
+
+    modifier onlyowner { if (msg.sender == _owner) _; }
+
+    function UserContract(address asset) {
+        _owner = msg.sender;
+        _asset = asset;
+    }
+
+    function() payable {
+        throw;
+    }
+
+    function transferMoney(address recepient, uint value) onlyowner {
+        var bank = ERC20(_asset);
+        if (!bank.transfer(recepient, value))
+            throw;
+    }
+}
