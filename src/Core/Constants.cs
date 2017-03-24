@@ -12,6 +12,6 @@
         public const string IssueNotifyQueue = "quanta-in";
         public const string CashoutQueue = "quanta-out";
 
-        public const int TimeCoinDecimals = 8;
+        public const int TimeCoinDecimals = 0;
     }
 }

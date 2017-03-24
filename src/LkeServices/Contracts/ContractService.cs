@@ -56,6 +56,8 @@ namespace LkeServices.Contracts
                 transactionHashList.Add(transactionHash);
             }
 
+            var contract = _web3.Eth.GetContract(_settings.QuantaAssetProxy.Abi, _settings.QuantaAssetProxy.Address); //NEW LINE
+
             // wait for all <count> contracts transactions
             var contractList = new List<string>();
             for (var i = 0; i < count; i++)
@@ -73,6 +75,11 @@ namespace LkeServices.Contracts
                 if (string.IsNullOrWhiteSpace(code) || code == "0x")
                 {
                     throw new Exception("Code was not deployed correctly, verify bytecode or enough gas was to deploy the contract");
+                }
+
+                if(!await contract.GetFunction("addUser").CallAsync<bool>(receipt.ContractAddress)) //NEW CODE
+                {
+                    throw new Exception("addUser function failed on QNTB contract");
                 }
 
                 contractList.Add(receipt.ContractAddress);
