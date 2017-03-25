@@ -19,7 +19,7 @@ contract UserContract {
         throw;
     }
 
-    function transferMoney(address recepient, uint value) onlyowner {
+    function transferMoney(address recepient, uint64 value) onlyowner {
         var bank = QNTB(_asset);
         if (!bank.transfer(recepient, value))
             throw;
