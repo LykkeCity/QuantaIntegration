@@ -1,4 +1,6 @@
-﻿namespace Core.TransactionMonitoring
+﻿using System;
+
+namespace Core.TransactionMonitoring
 {
     public enum TransactionType
     {
@@ -13,5 +15,6 @@
         public string Address { get; set; }
         public string Amount { get; set; }
         public TransactionType Type { get; set; }
+        public DateTime PutDateTime { get; set; }
     }
 }

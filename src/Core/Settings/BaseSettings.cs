@@ -19,13 +19,15 @@
         public decimal MainAccountMinBalance { get; set; } = 1;
 
         public Contract QuantaAssetProxy { get; set; }
+
+        public int TransactionExecutionTimeoutMinutes { get; set; } = 10;
     }
 
     public class Db
     {
         public string DataConnString { get; set; }
         public string LogsConnString { get; set; }
-        public string SharedStorageConnString { get; set; }        
+        public string SharedStorageConnString { get; set; }
         public string QuantaSrvConnString { get; set; }
     }
 
