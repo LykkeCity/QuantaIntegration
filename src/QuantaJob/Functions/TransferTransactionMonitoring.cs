@@ -46,12 +46,12 @@ namespace QuantaJob.Functions
                     await _userContractRepository.DecreaseBalance(message.UserContract, amount);
                     await _issueNotifier.AddNotify(message.TxHash, message.UserContract, amount.FromBlockchainAmount(Constants.TimeCoinDecimals));
 
-                    await _logger.WriteInfoAsync("TransferTransactionMonitoring", "Monitoring", "Cashin success", message.ToJson());
+                    await _logger.WriteInfoAsync("TransferTransactionMonitoring", "Monitoring", message.ToJson(), "Cashin success");
                 }
 
                 if (message.Type == TransactionType.Cashout)
                 {
-                    await _logger.WriteInfoAsync("TransferTransactionMonitoring", "Monitoring", "Cashout success", message.ToJson());
+                    await _logger.WriteInfoAsync("TransferTransactionMonitoring", "Monitoring", message.ToJson(), "Cashout success");
                 }
             }
             else if ((DateTime.UtcNow - message.PutDateTime).TotalMinutes < _settings.TransactionExecutionTimeoutMinutes)
