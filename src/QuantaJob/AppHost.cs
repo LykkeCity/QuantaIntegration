@@ -46,7 +46,7 @@ namespace QuantaJob
                 end.WaitOne();
             };
 
-            triggerHost.StartAndBlock();
+            triggerHost.Start().Wait();
             end.Set();
         }
     }
