@@ -27,7 +27,7 @@ namespace QuantaJob.Functions
             var count = await _contractQueueService.Count();
             for (var i = 0; i < count; i++)
             {
-                var contract = await _contractQueueService.GetContract();
+                var contract = await _contractQueueService.GetContractRaw();
                 if (string.IsNullOrWhiteSpace(contract))
                     return;
                 await _contractQueueService.PushContract(contract);

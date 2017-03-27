@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AzureStorage.Queue;
+using Common;
 using Core;
 using Core.Contracts;
 using Core.Exceptions;
@@ -24,6 +25,15 @@ namespace LkeServices.Contracts
 
         public async Task<string> GetContract()
         {
+            var contract = await GetContractRaw();
+
+            await _userContractRepository.SaveContract(contract);
+
+            return contract;
+        }
+
+        public async Task<string> GetContractRaw()
+        {
             Action throwAction = () =>
             {
                 _slackNotifier.ErrorAsync("Quanta integration! User contract pool is empty!");
@@ -39,8 +49,6 @@ namespace LkeServices.Contracts
 
             if (string.IsNullOrWhiteSpace(contract))
                 throwAction();
-
-            await _userContractRepository.SaveContract(contract);
 
             return contract;
         }
