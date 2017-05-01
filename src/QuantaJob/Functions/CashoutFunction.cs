@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Threading.Tasks;
 using Common;
 using Common.Log;
@@ -7,6 +8,7 @@ using Core.Repositories.Cashout;
 using Core.Settings;
 using Core.TransactionMonitoring;
 using Lykke.JobTriggers.Triggers.Attributes;
+using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;
 
@@ -44,7 +46,15 @@ namespace QuantaJob.Functions
 
             var contract = _web3.Eth.GetContract(_settings.QuantaAssetProxy.Abi, _settings.QuantaAssetProxy.Address);
 
-            var amount = model.Amount.ToBlockchainAmount(Constants.TimeCoinDecimals);
+            var amount = model.Amount.ToBlockchainAmount(Constants.QuantaCoinDecimals);
+
+            // check if user is registered in QNTL contract
+            var check = await contract.GetFunction("statusOf").CallDeserializingToObjectAsync<StatusOf>(model.Address);
+
+            if (check.IndexOfService == 0)
+            {
+                throw new Exception($"User is not registered in quanta {model.Address}, {model.Id}");
+            }
 
             var tx = await contract.GetFunction("transfer").SendTransactionAsync(_settings.EthereumMainAccount, new HexBigInteger(Constants.GasForTransfer),
                                         new HexBigInteger(0), model.Address, amount);
@@ -60,5 +70,15 @@ namespace QuantaJob.Functions
         public Guid Id { get; set; }
         public string Address { get; set; }
         public decimal Amount { get; set; }
+    }
+
+    [FunctionOutput]
+    public class StatusOf
+    {
+        [Parameter("uint256", "indexOfService", 1)]
+        public BigInteger IndexOfService { get; set; }
+
+        [Parameter("uint256", "isFrozen", 2)]
+        public BigInteger IsFrozen { get; set; }
     }
 }

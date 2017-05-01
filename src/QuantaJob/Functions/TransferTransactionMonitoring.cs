@@ -44,7 +44,7 @@ namespace QuantaJob.Functions
                     var amount = BigInteger.Parse(message.Amount);
 
                     await _userContractRepository.DecreaseBalance(message.UserContract, amount);
-                    await _issueNotifier.AddNotify(message.TxHash, message.UserContract, amount.FromBlockchainAmount(Constants.TimeCoinDecimals));
+                    await _issueNotifier.AddNotify(message.TxHash, message.UserContract, amount.FromBlockchainAmount(Constants.QuantaCoinDecimals));
 
                     await _logger.WriteInfoAsync("TransferTransactionMonitoring", "Monitoring", message.ToJson(), "Cashin success");
                 }

@@ -35,7 +35,13 @@ namespace QuantaApi
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            var settings = GeneralSettingsReader.ReadGeneralSettings<GeneralSettings>(Configuration.GetConnectionString("Settings"));
+            BaseSettings settings;
+#if DEBUG
+            settings = GeneralSettingsReader.ReadGeneralSettingsLocal<BaseSettings>(Configuration.GetConnectionString("Settings"));
+#else
+            var generalSettings = GeneralSettingsReader.ReadGeneralSettings<GeneralSettings>(Configuration.GetConnectionString("Settings"));
+            settings = generalSettings.QuantaApi;
+#endif
 
             services.AddMvc(o =>
             {
@@ -59,7 +65,7 @@ namespace QuantaApi
                 options.IncludeXmlComments(xmlPath);
             });
 
-            var builder = new AzureBinder().Bind(settings.QuantaApi);
+            var builder = new AzureBinder().Bind(settings);
             builder.Populate(services);
 
             return new AutofacServiceProvider(builder.Build());

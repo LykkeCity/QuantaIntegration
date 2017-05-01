@@ -55,7 +55,7 @@ namespace LkeServices.Contracts
                 // deploy contract
                 var transactionHash = await
                         _web3.Eth.DeployContract.SendRequestAsync(_settings.UserContract.Abi, _settings.UserContract.ByteCode,
-                            _settings.EthereumMainAccount, new HexBigInteger(500000), _settings.QuantaAssetProxy.Address);
+                            _settings.EthereumMainAccount, new HexBigInteger(Constants.GasForUserContractDeploy), _settings.QuantaAssetProxy.Address);
 
                 transactionHashList.Add(transactionHash);
             }
@@ -83,19 +83,6 @@ namespace LkeServices.Contracts
                         throw new Exception("Code was not deployed correctly, verify bytecode or enough gas was to deploy the contract");
                     }
 
-                    var function = contract.GetFunction("addUser");
-
-                    if (await function.CallAsync<bool>(_settings.QuantaAssetContractOwner, new HexBigInteger(Constants.GasForTransfer),
-                            new HexBigInteger(0), receipt.ContractAddress))
-                    {
-                        await function.SendTransactionAsync(_settings.QuantaAssetContractOwner, new HexBigInteger(Constants.GasForTransfer),
-                            new HexBigInteger(0), receipt.ContractAddress);
-                    }
-                    else
-                    {
-                        throw new Exception("addUser function failed on QNTB contract");
-                    }
-
                     contractList.Add(receipt.ContractAddress);
                 }
                 catch (Exception exc)
@@ -104,7 +91,30 @@ namespace LkeServices.Contracts
                 }
             }
 
+            await AddAddressesToQuanta(contract, contractList);
+
             return contractList.ToArray();
+        }
+
+        private async Task AddAddressesToQuanta(Nethereum.Contracts.Contract contract, List<string> contracts)
+        {
+            var function = contract.GetFunction("addDepositAddress");
+
+            if (await function.CallAsync<bool>(_settings.EthereumMainAccount, new HexBigInteger(Constants.GasForQuantaContractCreation),
+                new HexBigInteger(0), new object[] { contracts.ToArray() }))
+            {
+                var tx = await function.SendTransactionAsync(_settings.EthereumMainAccount, new HexBigInteger(Constants.GasForQuantaContractCreation),
+                     new HexBigInteger(0), new object[] { contracts.ToArray() });
+
+                while (await _web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(tx) == null)
+                {
+                    await Task.Delay(100);
+                }
+            }
+            else
+            {
+                throw new Exception("addUser function failed on QNTB contract");
+            }
         }
     }
 }

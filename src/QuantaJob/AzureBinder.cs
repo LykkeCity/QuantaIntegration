@@ -40,16 +40,12 @@ namespace QuantaJob
 
             ioc.BindCommonServices();
             ioc.BindAzure(settings, log);
-
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(log);
-
-            serviceCollection.AddTriggers(pool =>
+            
+            ioc.AddTriggers(pool =>
             {
                 pool.AddDefaultConnection(settings.Db.DataConnString);
                 pool.AddConnection("cashout", settings.Db.QuantaSrvConnString);
             });
-            ioc.Populate(serviceCollection);
 
             ioc.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
         }

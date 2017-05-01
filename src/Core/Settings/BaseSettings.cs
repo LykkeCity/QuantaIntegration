@@ -10,14 +10,13 @@
         public Contract UserContract { get; set; }
 
         public string EthereumMainAccount { get; set; }
-        public string QuantaAssetContractOwner { get; set; }
 
         public int MinContractPoolLength { get; set; } = 100;
         public int MaxContractPoolLength { get; set; } = 200;
         public int ContractsPerRequest { get; set; } = 50;
 
         public decimal MainAccountMinBalance { get; set; } = 1;
-
+        
         public Contract QuantaAssetProxy { get; set; }
 
         public int TransactionExecutionTimeoutMinutes { get; set; } = 10;

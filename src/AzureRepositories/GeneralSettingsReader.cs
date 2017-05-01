@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 
 namespace AzureRepositories
@@ -12,6 +13,13 @@ namespace AzureRepositories
             var settingsData = httpClient.GetStringAsync("").Result;
 
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(settingsData);
+        }
+
+        public static T ReadGeneralSettingsLocal<T>(string path)
+        {
+            var content = File.ReadAllText(path);
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
         }
     }
 }
