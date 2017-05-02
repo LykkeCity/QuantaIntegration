@@ -2,6 +2,7 @@
 using QuantaApi.Filters;
 using QuantaApi.Models;
 using Core.Contracts;
+using Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace QuantaApi.Controllers
@@ -10,10 +11,12 @@ namespace QuantaApi.Controllers
     public class ClientController : Controller
     {
         private readonly IUserContractQueueService _userContractQueueService;
+        private readonly IContractService _contractService;
 
-        public ClientController(IUserContractQueueService userContractQueueService)
+        public ClientController(IUserContractQueueService userContractQueueService, IContractService contractService)
         {
             _userContractQueueService = userContractQueueService;
+            _contractService = contractService;
         }
 
         /// <summary>
@@ -30,6 +33,19 @@ namespace QuantaApi.Controllers
             var response = new RegisterResponse
             {
                 Contract = contract
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet("isQuantaUser")]
+        [ProducesResponseType(typeof(IsQuantaUserResponse), 200)]
+        [ProducesResponseType(typeof(ApiException), 400)]
+        public async Task<IActionResult> IsQuantaUser([FromQuery]string address)
+        {
+            var response = new IsQuantaUserResponse
+            {
+                IsQuantaUser = await _contractService.IsQuantaUser(address)
             };
 
             return Ok(response);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Common;
 using Common.Log;
 using Core;
+using Core.Contracts;
 using Core.Repositories.Cashout;
 using Core.Settings;
 using Core.TransactionMonitoring;
@@ -21,14 +22,16 @@ namespace QuantaJob.Functions
         private readonly Web3 _web3;
         private readonly BaseSettings _settings;
         private readonly ITransactionMonitoringQueueWriter _transactionMonitoringQueueWriter;
+        private readonly IContractService _contractService;
 
-        public CashoutFunction(ICashoutRepository cashoutRepository, ILog logger, Web3 web3, BaseSettings settings, ITransactionMonitoringQueueWriter transactionMonitoringQueueWriter)
+        public CashoutFunction(ICashoutRepository cashoutRepository, ILog logger, Web3 web3, BaseSettings settings, ITransactionMonitoringQueueWriter transactionMonitoringQueueWriter, IContractService contractService)
         {
             _cashoutRepository = cashoutRepository;
             _logger = logger;
             _web3 = web3;
             _settings = settings;
             _transactionMonitoringQueueWriter = transactionMonitoringQueueWriter;
+            _contractService = contractService;
         }
 
         [QueueTrigger(Constants.CashoutQueue, notify: true, connection: "cashout")]
@@ -48,16 +51,11 @@ namespace QuantaJob.Functions
 
             var amount = model.Amount.ToBlockchainAmount(Constants.QuantaCoinDecimals);
 
-            // check if user is registered in QNTL contract
-            var check = await contract.GetFunction("statusOf").CallDeserializingToObjectAsync<StatusOf>(model.Address);
-
-            if (check.IndexOfService == 0)
-            {
+            if (!await _contractService.IsQuantaUser(model.Address))
                 throw new Exception($"User is not registered in quanta {model.Address}, {model.Id}");
-            }
 
             var tx = await contract.GetFunction("transfer").SendTransactionAsync(_settings.EthereumMainAccount, new HexBigInteger(Constants.GasForTransfer),
-                                        new HexBigInteger(0), model.Address, amount);
+                                       new HexBigInteger(0), model.Address, amount);
 
             await _transactionMonitoringQueueWriter.AddCashoutToMonitoring(tx, model.Address);
 
@@ -70,15 +68,5 @@ namespace QuantaJob.Functions
         public Guid Id { get; set; }
         public string Address { get; set; }
         public decimal Amount { get; set; }
-    }
-
-    [FunctionOutput]
-    public class StatusOf
-    {
-        [Parameter("uint256", "indexOfService", 1)]
-        public BigInteger IndexOfService { get; set; }
-
-        [Parameter("uint256", "isFrozen", 2)]
-        public BigInteger IsFrozen { get; set; }
     }
 }

@@ -42,11 +42,11 @@ namespace Test
 
             var contract = web3.Eth.GetContract(settings.QuantaAssetProxy.Abi, settings.QuantaAssetProxy.Address);
 
-            var totalSupply = await contract.GetFunction("statusOf").CallDeserializingToObjectAsync<StatusOf>(LocalAddress);
+            var totalSupply = await contract.GetFunction("statusOf").CallDeserializingToObjectAsync<StatusOf>("0x8418ea098649af6fe384ed81b0ef566f0361448e");
 
-            var mainBalance = await contract.GetFunction("balanceOf").CallAsync<BigInteger>(LocalAddress);
+            var mainBalance = await contract.GetFunction("balanceOf").CallAsync<BigInteger>("0x8418ea098649af6fe384ed81b0ef566f0361448e");
 
-            //await ExecuteFunction(AssetContractOwner, contract.GetFunction("issue"), "0x8674e1d56021fbc1c33b3dd7db76667905f45e54", BigInteger.Parse("50"));
+            await ExecuteFunction(AssetContractOwner, contract.GetFunction("issue"), "0x8418ea098649af6fe384ed81b0ef566f0361448e", BigInteger.Parse("50"));
         }
 
         [Test]

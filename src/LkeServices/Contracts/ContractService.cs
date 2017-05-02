@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using Common.Log;
 using Core;
 using Core.Contracts;
 using Core.Settings;
+using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
@@ -116,5 +118,32 @@ namespace LkeServices.Contracts
                 throw new Exception("addUser function failed on QNTB contract");
             }
         }
+
+        public async Task<bool> IsQuantaUser(string address)
+        {
+            try
+            {
+                var contract = _web3.Eth.GetContract(_settings.QuantaAssetProxy.Abi, _settings.QuantaAssetProxy.Address);
+
+                // check if user is registered in QNTL contract
+                var check = await contract.GetFunction("statusOf").CallDeserializingToObjectAsync<StatusOf>(address);
+
+                return check.IndexOfService != 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+    }
+
+    [FunctionOutput]
+    public class StatusOf
+    {
+        [Parameter("uint256", "indexOfService", 1)]
+        public BigInteger IndexOfService { get; set; }
+
+        [Parameter("uint256", "isFrozen", 2)]
+        public BigInteger IsFrozen { get; set; }
     }
 }

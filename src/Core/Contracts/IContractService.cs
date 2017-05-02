@@ -6,5 +6,7 @@ namespace Core.Contracts
     {
         Task<string> CreateContract(string from, string abi, string bytecode, params object[] constructorParams);
         Task<string[]> GenerateUserContracts(int count = 10);
+
+        Task<bool> IsQuantaUser(string address);
     }
 }
