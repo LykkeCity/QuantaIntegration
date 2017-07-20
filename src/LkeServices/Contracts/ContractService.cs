@@ -129,11 +129,11 @@ namespace LkeServices.Contracts
                 //If returned service ID > 0: user’s ETH address existed in the whitelist
                 //If returned service ID <= 0: user’s ETH address NOT existed in the whitelist.
                 // check if user is registered in QNTL contract
-                var check = await contract.GetFunction("verifyAccount").CallDeserializingToObjectAsync<BigInteger>(address);
+                var check = await contract.GetFunction("verifyAccount").CallAsync<BigInteger>(address);
 
                 return check > 0;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return false;
             }
