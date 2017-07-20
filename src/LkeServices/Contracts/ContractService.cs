@@ -62,7 +62,7 @@ namespace LkeServices.Contracts
                 transactionHashList.Add(transactionHash);
             }
 
-            var contract = _web3.Eth.GetContract(_settings.QuantaAssetProxy.Abi, _settings.QuantaAssetProxy.Address);
+            var contract = _web3.Eth.GetContract(_settings.QuantaAdminProxy.Abi, _settings.QuantaAdminProxy.Address);
 
             // wait for all <count> contracts transactions
             var contractList = new List<string>();
@@ -100,7 +100,7 @@ namespace LkeServices.Contracts
 
         private async Task AddAddressesToQuanta(Nethereum.Contracts.Contract contract, List<string> contracts)
         {
-            var function = contract.GetFunction("addDepositAddress");
+            var function = contract.GetFunction("addAccount");
 
             if (await function.CallAsync<bool>(_settings.EthereumMainAccount, new HexBigInteger(Constants.GasForQuantaContractCreation),
                 new HexBigInteger(0), new object[] { contracts.ToArray() }))
@@ -125,10 +125,13 @@ namespace LkeServices.Contracts
             {
                 var contract = _web3.Eth.GetContract(_settings.QuantaAssetProxy.Abi, _settings.QuantaAssetProxy.Address);
 
+                //function verifyAccount(address _account) public constant returns(uint)
+                //If returned service ID > 0: user’s ETH address existed in the whitelist
+                //If returned service ID <= 0: user’s ETH address NOT existed in the whitelist.
                 // check if user is registered in QNTL contract
-                var check = await contract.GetFunction("statusOf").CallDeserializingToObjectAsync<StatusOf>(address);
+                var check = await contract.GetFunction("verifyAccount").CallDeserializingToObjectAsync<BigInteger>(address);
 
-                return check.IndexOfService != 0;
+                return check > 0;
             }
             catch (Exception)
             {

@@ -16,8 +16,10 @@
         public int ContractsPerRequest { get; set; } = 50;
 
         public decimal MainAccountMinBalance { get; set; } = 1;
-        
+
         public Contract QuantaAssetProxy { get; set; }
+
+        public Contract QuantaAdminProxy { get; set; }
 
         public int TransactionExecutionTimeoutMinutes { get; set; } = 10;
     }

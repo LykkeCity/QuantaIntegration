@@ -1,31 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{04BB165F-9B88-47A1-9CC8-B9FE7286342A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Core", "src\Core\Core.xproj", "{2668B3D4-F417-4BAE-A046-5413E3CC0CBD}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AzureRepositories", "src\AzureRepositories\AzureRepositories.xproj", "{91FC88D1-CA8A-484E-A68A-78C9229EB416}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LkeServices", "src\LkeServices\LkeServices.xproj", "{D57A254F-AEB6-4EDB-B9EF-A6ED13711EF4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runners", "Runners", "{73E5244B-3A3A-4065-BDB5-43A7B78012BC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ApiRunner", "src\ApiRunner\ApiRunner.xproj", "{32ED9A10-591C-4EEF-8C30-AF5BD690FA0D}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "JobRunner", "src\JobRunner\JobRunner.xproj", "{2C460B14-CA66-4B5B-966C-A32E569929C8}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ContractBuilder", "src\ContractBuilder\ContractBuilder.xproj", "{D05F3DC5-59C5-45A5-B5A3-0FDBBAD0B700}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "QuantaApi", "src\QuantaApi\QuantaApi.xproj", "{ACD14BE5-B6A7-47D2-B2FE-6B9C33B3797C}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "QuantaJob", "src\QuantaJob\QuantaJob.xproj", "{61E833C8-2CE9-4199-ABC5-BB7A787D856B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Test", "tests\Test\Test.xproj", "{E94A0EF6-8D4F-4F45-81D3-77BF7CB81EC2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{95F11C4B-8291-4B5D-B01C-D45B618E117F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\Core\Core.csproj", "{2668B3D4-F417-4BAE-A046-5413E3CC0CBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureRepositories", "src\AzureRepositories\AzureRepositories.csproj", "{91FC88D1-CA8A-484E-A68A-78C9229EB416}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LkeServices", "src\LkeServices\LkeServices.csproj", "{D57A254F-AEB6-4EDB-B9EF-A6ED13711EF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiRunner", "src\ApiRunner\ApiRunner.csproj", "{32ED9A10-591C-4EEF-8C30-AF5BD690FA0D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobRunner", "src\JobRunner\JobRunner.csproj", "{2C460B14-CA66-4B5B-966C-A32E569929C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractBuilder", "src\ContractBuilder\ContractBuilder.csproj", "{D05F3DC5-59C5-45A5-B5A3-0FDBBAD0B700}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuantaApi", "src\QuantaApi\QuantaApi.csproj", "{ACD14BE5-B6A7-47D2-B2FE-6B9C33B3797C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuantaJob", "src\QuantaJob\QuantaJob.csproj", "{61E833C8-2CE9-4199-ABC5-BB7A787D856B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "tests\Test\Test.csproj", "{E94A0EF6-8D4F-4F45-81D3-77BF7CB81EC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

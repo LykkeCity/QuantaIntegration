@@ -2,7 +2,7 @@ version: '2'
 
 services:
   apirunner:
-    image: lykkex/quantaapi
+    image: lykkedev/quantaapi
     ports:
      - "6566:6000"
     environment:
