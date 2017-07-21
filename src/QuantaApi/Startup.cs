@@ -36,12 +36,9 @@ namespace QuantaApi
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             BaseSettings settings;
-#if DEBUG
-            settings = GeneralSettingsReader.ReadGeneralSettingsLocal<BaseSettings>(Configuration.GetConnectionString("Settings"));
-#else
+
             var generalSettings = GeneralSettingsReader.ReadGeneralSettings<GeneralSettings>(Configuration.GetConnectionString("Settings"));
             settings = generalSettings.QuantaApi;
-#endif
 
             services.AddMvc(o =>
             {
