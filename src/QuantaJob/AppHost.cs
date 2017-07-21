@@ -28,12 +28,9 @@ namespace QuantaJob
         public void Run()
         {
             BaseSettings settings;
-#if DEBUG
-            settings = GeneralSettingsReader.ReadGeneralSettingsLocal<BaseSettings>(Configuration.GetConnectionString("Settings"));
-#else
             var generalSettings = GeneralSettingsReader.ReadGeneralSettings<GeneralSettings>(Configuration.GetConnectionString("Settings"));
             settings = generalSettings.QuantaJobs;
-#endif
+
             var containerBuilder = new AzureBinder().Bind(settings);
             var ioc = containerBuilder.Build();
 
